@@ -29,6 +29,7 @@ dependencies {
     compileOnly(libs.ktlint.gradlePlugin)
     compileOnly(libs.spotless.gradle)
     implementation(libs.truth)
+    compileOnly(libs.androidx.room.gradle.plugin)
 }
 
 tasks {
@@ -90,6 +91,13 @@ gradlePlugin {
             id = "org.convention.git.hooks"
             implementationClass = "GitHooksConventionPlugin"
             description = "Installs git hooks for the project"
+        }
+
+//        Room Plugin
+        register("KMPRoom"){
+            id = "mifos.kmp.room"
+            implementationClass = "KMPRoomConventionPlugin"
+            description = "Configures Room for the project"
         }
     }
 }
