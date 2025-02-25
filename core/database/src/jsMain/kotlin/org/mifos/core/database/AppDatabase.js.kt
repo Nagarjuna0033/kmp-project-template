@@ -9,8 +9,8 @@
  */
 package org.mifos.core.database
 
-import org.mifos.core.database.dao.ChargeDao
+import org.mifos.core.database.dao.SampleDao
 
 actual abstract class AppDatabase {
-    actual abstract val chargeDao: ChargeDao
+    actual abstract val sampleDao: SampleDao
 }

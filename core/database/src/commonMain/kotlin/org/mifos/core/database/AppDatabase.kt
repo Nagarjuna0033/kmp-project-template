@@ -9,10 +9,10 @@
  */
 package org.mifos.core.database
 
-import org.mifos.core.database.dao.ChargeDao
+import org.mifos.core.database.dao.SampleDao
 
 expect abstract class AppDatabase {
-    abstract val chargeDao: ChargeDao
+    abstract val sampleDao: SampleDao
 }
 
 // fun getRoomDatabase(

@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 Mifos Initiative
+ * Copyright 2024 Mifos Initiative
  *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -10,10 +10,20 @@
 package org.mifos.core.database.entity
 
 import kotlinx.serialization.Serializable
+import org.mifos.corebase.Entity
+import org.mifos.corebase.PrimaryKey
 
+@Entity(
+    tableName = "samples",
+    indices = [],
+    inheritSuperIndices = false,
+    primaryKeys = [],
+    foreignKeys = [],
+    ignoredColumns = [],
+)
 @Serializable
-data class ChargeTimeTypeEntity(
-    val id: Int = 0,
-    val code: String? = null,
-    val value: String? = null,
+data class SampleEntity(
+    @PrimaryKey(autoGenerate = false)
+    val id: Int,
+    val name: String,
 )

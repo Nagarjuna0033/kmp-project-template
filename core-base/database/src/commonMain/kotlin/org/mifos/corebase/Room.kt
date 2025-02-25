@@ -7,7 +7,7 @@
  *
  * See See https://github.com/openMF/kmp-project-template/blob/main/LICENSE
  */
-package org.mifos.core.database
+package org.mifos.corebase
 
 import kotlin.reflect.KClass
 
@@ -37,12 +37,12 @@ expect annotation class PrimaryKey(
 )
 
 @Suppress("NO_ACTUAL_FOR_EXPECT")
-@Target(allowedTargets = []) // Complex annotation target
+@Target(allowedTargets = [])
 @Retention(AnnotationRetention.BINARY)
 expect annotation class ForeignKey
 
 @Suppress("NO_ACTUAL_FOR_EXPECT")
-@Target(allowedTargets = []) // Complex annotation target
+@Target(allowedTargets = [])
 @Retention(AnnotationRetention.BINARY)
 expect annotation class Index
 

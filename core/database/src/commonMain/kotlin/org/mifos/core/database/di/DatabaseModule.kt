@@ -15,7 +15,7 @@ import org.mifos.core.database.AppDatabase
 
 val DatabaseModule = module {
     includes(platformModule)
-    single { get<AppDatabase>().chargeDao }
+    single { get<AppDatabase>().sampleDao }
 }
 
 expect val platformModule: Module
