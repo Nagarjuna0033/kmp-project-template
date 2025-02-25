@@ -11,8 +11,8 @@ package org.mifos.core.database.utils
 
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
-import org.mifos.core.database.TypeConverter
 import org.mifos.core.database.entity.SampleEntity
+import org.mifos.corebase.TypeConverter
 
 class ChargeTypeConverters {
 

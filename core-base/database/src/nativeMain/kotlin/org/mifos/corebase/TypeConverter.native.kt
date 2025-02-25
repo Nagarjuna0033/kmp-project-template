@@ -7,8 +7,8 @@
  *
  * See See https://github.com/openMF/kmp-project-template/blob/main/LICENSE
  */
-package org.mifos.core.database
+package org.mifos.corebase
 
-@Target(AnnotationTarget.FUNCTION)
-@Retention(AnnotationRetention.BINARY)
-expect annotation class TypeConverter()
+import androidx.room.TypeConverter
+
+actual typealias TypeConverter = TypeConverter
