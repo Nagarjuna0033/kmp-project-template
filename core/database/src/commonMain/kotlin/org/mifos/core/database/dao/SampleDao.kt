@@ -19,7 +19,7 @@ import org.mifos.corebase.Query
 @Dao
 interface SampleDao {
 
-    @Query("SELECT * FROM charges")
+    @Query("SELECT * FROM samples")
     fun getAllSamples(): Flow<List<SampleEntity>>
 
     @Insert(entity = SampleEntity::class, onConflict = OnConflictStrategy.REPLACE)

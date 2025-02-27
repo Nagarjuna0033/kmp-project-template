@@ -11,12 +11,7 @@ package org.mifos.core.database
 
 import org.mifos.core.database.dao.SampleDao
 
+@Suppress("NO_ACTUAL_FOR_EXPECT")
 expect abstract class AppDatabase {
     abstract val sampleDao: SampleDao
 }
-
-// fun getRoomDatabase(
-//    appDatabase: AppDatabase,
-// ): AppDatabase {
-//    return appDatabase
-// }

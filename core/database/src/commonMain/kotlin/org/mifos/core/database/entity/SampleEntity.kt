@@ -23,7 +23,7 @@ import org.mifos.corebase.PrimaryKey
 )
 @Serializable
 data class SampleEntity(
-    @PrimaryKey(autoGenerate = false)
-    val id: Int,
-    val name: String,
+    @PrimaryKey(autoGenerate = true)
+    val id: Int = 0,
+    val name: String = "",
 )

@@ -7,29 +7,35 @@
  *
  * See See https://github.com/openMF/kmp-project-template/blob/main/LICENSE
  */
-package org.mifos.core.database
+package org.mifos.corebase
 
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.util.findAndInstantiateDatabaseImpl
 import java.io.File
 
 class AppDatabaseFactory {
-    fun createDatabase(): RoomDatabase.Builder<AppDatabase> {
+    inline fun <reified T : RoomDatabase> createDatabase(
+        databaseName: String,
+        noinline factory: () -> T = { findAndInstantiateDatabaseImpl(T::class.java) },
+    ): RoomDatabase.Builder<T> {
         val os = System.getProperty("os.name").lowercase()
         val userHome = System.getProperty("user.home")
         val appDataDir = when {
-            os.contains("win") -> File(System.getenv("APPDATA"), "Bookpedia")
-            os.contains("mac") -> File(userHome, "Library/Application Support/Bookpedia")
-            else -> File(userHome, ".local/share/Bookpedia")
+            os.contains("win") -> File(System.getenv("APPDATA"), "MifosDatabase")
+            os.contains("mac") -> File(userHome, "Library/Application Support/MifosDatabase")
+            else -> File(userHome, ".local/share/MifosDatabase")
         }
 
         if (!appDataDir.exists()) {
             appDataDir.mkdirs()
         }
 
-        val dbFile = File(appDataDir, AppDatabase.DATABASE_NAME)
-        return Room.databaseBuilder<AppDatabase>(
+        val dbFile = File(appDataDir, databaseName)
+
+        return Room.databaseBuilder(
             name = dbFile.absolutePath,
+            factory = factory,
         )
     }
 }

@@ -7,7 +7,7 @@
  *
  * See See https://github.com/openMF/kmp-project-template/blob/main/LICENSE
  */
-package org.mifos.core.database
+package org.mifos.corebase
 
 import android.content.Context
 import androidx.room.Room
@@ -16,13 +16,11 @@ import androidx.room.RoomDatabase
 class AppDatabaseFactory(
     private val context: Context,
 ) {
-    fun createDatabase(): RoomDatabase.Builder<AppDatabase> {
-        val appContext = context.applicationContext
-        val dbFile = appContext.getDatabasePath(AppDatabase.DATABASE_NAME)
-
-        return Room.databaseBuilder<AppDatabase>(
-            context = appContext,
-            name = dbFile.absolutePath,
+    fun <T : RoomDatabase> createDatabase(databaseClass: Class<T>, databaseName: String): RoomDatabase.Builder<T> {
+        return Room.databaseBuilder(
+            context.applicationContext,
+            databaseClass,
+            databaseName,
         )
     }
 }

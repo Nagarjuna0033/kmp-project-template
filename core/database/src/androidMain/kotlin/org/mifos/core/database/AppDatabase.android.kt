@@ -26,6 +26,7 @@ import org.mifos.core.database.utils.ChargeTypeConverters
 )
 @TypeConverters(ChargeTypeConverters::class)
 actual abstract class AppDatabase : RoomDatabase() {
+
     actual abstract val sampleDao: SampleDao
 
     companion object {

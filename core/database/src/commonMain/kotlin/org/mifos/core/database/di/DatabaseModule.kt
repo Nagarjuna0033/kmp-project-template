@@ -18,4 +18,5 @@ val DatabaseModule = module {
     single { get<AppDatabase>().sampleDao }
 }
 
+@Suppress("NO_ACTUAL_FOR_EXPECT")
 expect val platformModule: Module

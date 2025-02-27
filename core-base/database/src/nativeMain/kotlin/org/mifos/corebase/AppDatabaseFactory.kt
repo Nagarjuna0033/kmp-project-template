@@ -7,25 +7,30 @@
  *
  * See See https://github.com/openMF/kmp-project-template/blob/main/LICENSE
  */
-package org.mifos.core.database
+package org.mifos.corebase
 
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.util.findDatabaseConstructorAndInitDatabaseImpl
 import kotlinx.cinterop.ExperimentalForeignApi
 import platform.Foundation.NSDocumentDirectory
 import platform.Foundation.NSFileManager
 import platform.Foundation.NSUserDomainMask
 
 class AppDatabaseFactory {
-    fun createDatabase(): RoomDatabase.Builder<AppDatabase> {
-        val dbFilePath = documentDirectory() + "/${AppDatabase.DATABASE_NAME}"
-        return Room.databaseBuilder<AppDatabase>(
+    inline fun <reified T : RoomDatabase> createDatabase(
+        databaseName: String,
+        noinline factory: () -> T = { findDatabaseConstructorAndInitDatabaseImpl(T::class) },
+    ): RoomDatabase.Builder<T> {
+        val dbFilePath = documentDirectory() + "/$databaseName"
+        return Room.databaseBuilder(
             name = dbFilePath,
+            factory = factory,
         )
     }
 
     @OptIn(ExperimentalForeignApi::class)
-    private fun documentDirectory(): String {
+    fun documentDirectory(): String {
         val documentDirectory = NSFileManager.defaultManager.URLForDirectory(
             directory = NSDocumentDirectory,
             inDomain = NSUserDomainMask,
