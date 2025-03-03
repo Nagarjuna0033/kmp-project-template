@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Mifos Initiative
+ * Copyright 2025 Mifos Initiative
  *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -7,16 +7,9 @@
  *
  * See See https://github.com/openMF/kmp-project-template/blob/main/LICENSE
  */
-package org.mifos.core.database.di
-
-import org.koin.core.module.Module
-import org.koin.dsl.module
-import org.mifos.core.database.AppDatabase
-
-val DatabaseModule = module {
-    includes(platformModule)
-    single { get<AppDatabase>().sampleDao }
-}
+package org.mifos.corebase
 
 @Suppress("NO_ACTUAL_FOR_EXPECT")
-expect val platformModule: Module
+@Target(AnnotationTarget.FUNCTION)
+@Retention(AnnotationRetention.BINARY)
+expect annotation class TypeConverter()

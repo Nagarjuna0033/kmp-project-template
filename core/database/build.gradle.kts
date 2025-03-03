@@ -24,7 +24,6 @@ kotlin {
         androidMain.dependencies {
             implementation(libs.koin.android)
             implementation(libs.androidx.room.runtime)
-            implementation(libs.androidx.sqlite.bundled)
         }
 
         nativeMain.dependencies {
@@ -41,6 +40,7 @@ kotlin {
             implementation(libs.kotlinx.coroutines.core)
             implementation(libs.kotlinx.serialization.json)
             api(projects.core.common)
+            api(projects.coreBase.database)
         }
     }
 }

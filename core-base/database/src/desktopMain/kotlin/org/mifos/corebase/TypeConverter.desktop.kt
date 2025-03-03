@@ -7,11 +7,8 @@
  *
  * See See https://github.com/openMF/kmp-project-template/blob/main/LICENSE
  */
-package org.mifos.core.database
+package org.mifos.corebase
 
-import org.mifos.core.database.dao.SampleDao
+import androidx.room.TypeConverter
 
-@Suppress("NO_ACTUAL_FOR_EXPECT")
-expect abstract class AppDatabase {
-    abstract val sampleDao: SampleDao
-}
+actual typealias TypeConverter = TypeConverter

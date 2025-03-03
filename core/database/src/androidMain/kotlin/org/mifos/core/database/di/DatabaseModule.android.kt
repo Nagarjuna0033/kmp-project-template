@@ -9,8 +9,8 @@
  */
 package org.mifos.core.database.di
 
-import androidx.sqlite.driver.bundled.BundledSQLiteDriver
 import kotlinx.coroutines.CoroutineDispatcher
+import org.koin.android.ext.koin.androidApplication
 import org.koin.core.module.Module
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
@@ -21,12 +21,14 @@ import kotlin.coroutines.CoroutineContext
 
 actual val platformModule: Module = module {
     single {
-        AppDatabaseFactory()
-            .createDatabase<AppDatabase>(
+        AppDatabaseFactory(
+            androidApplication(),
+        )
+            .createDatabase(
+                databaseClass = AppDatabase::class.java,
                 databaseName = AppDatabase.DATABASE_NAME,
             )
             .fallbackToDestructiveMigrationOnDowngrade(false)
-            .setDriver(BundledSQLiteDriver())
             .setQueryCoroutineContext(get<CoroutineDispatcher>(named(AppDispatchers.IO.name)) as CoroutineContext)
             .build()
     }
