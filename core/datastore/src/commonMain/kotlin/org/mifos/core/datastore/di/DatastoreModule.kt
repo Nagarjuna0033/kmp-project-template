@@ -9,29 +9,43 @@
  */
 package org.mifos.core.datastore.di
 
+import com.russhwolf.settings.ExperimentalSettingsApi
 import com.russhwolf.settings.Settings
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 import org.mifos.core.common.di.AppDispatchers
+import org.mifos.core.datastore.SettingsFactory
 import org.mifos.core.datastore.UserPreferencesDataStore
 import org.mifos.core.datastore.UserPreferencesRepository
 import org.mifos.core.datastore.UserPreferencesRepositoryImpl
 
+@OptIn(ExperimentalSettingsApi::class)
 val DatastoreModule = module {
     single { Settings() }
     single {
+        SettingsFactory.createSuspendSettings(
+            settings = get(),
+            dispatcher = get(named(AppDispatchers.IO.name)),
+        )
+    }
+
+    single {
+        SettingsFactory.createFlowSettings(
+            settings = get(),
+            dispatcher = get(named(AppDispatchers.IO.name)),
+        )
+    }
+    single {
         UserPreferencesDataStore(
             get(),
-            get(named(AppDispatchers.IO.name)),
             get(),
         )
     }
     single<UserPreferencesRepository> {
         UserPreferencesRepositoryImpl(
             dataStore = get(),
-            ioDispatcher = get(named(AppDispatchers.IO.name)),
         )
     }
     single<CoroutineScope> { CoroutineScope(Dispatchers.Default) }

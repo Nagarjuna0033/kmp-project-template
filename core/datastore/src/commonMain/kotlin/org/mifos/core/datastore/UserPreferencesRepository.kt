@@ -9,22 +9,11 @@
  */
 package org.mifos.core.datastore
 
-import com.russhwolf.settings.SettingsListener
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.StateFlow
 import org.mifos.core.datastore.model.SampleUser
 
 interface UserPreferencesRepository {
-    val userFlow: Flow<SampleUser>
-    val lastLoginFlow: Flow<Long>
-    val lastLoginStateFlow: StateFlow<Long>
-    val currentUser: SampleUser
-    val lastLogin: Long
+    val currentUser: Flow<SampleUser>
 
     suspend fun saveUser(user: SampleUser)
-    suspend fun updateUserName(userName: String)
-    suspend fun removeUser()
-    suspend fun clearAll()
-    fun hasUser(): Boolean
-    fun observeAgeChange(onChange: (Int) -> Int): SettingsListener
 }

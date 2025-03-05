@@ -10,176 +10,188 @@
 package org.mifos.core.datastore
 
 import com.russhwolf.settings.ExperimentalSettingsApi
-import com.russhwolf.settings.ObservableSettings
-import com.russhwolf.settings.Settings
-import com.russhwolf.settings.SettingsListener
-import com.russhwolf.settings.coroutines.getLongFlow
-import com.russhwolf.settings.coroutines.getLongStateFlow
-import com.russhwolf.settings.long
-import com.russhwolf.settings.serialization.containsValue
-import com.russhwolf.settings.serialization.decodeValue
-import com.russhwolf.settings.serialization.decodeValueOrNull
-import com.russhwolf.settings.serialization.encodeValue
-import com.russhwolf.settings.serialization.removeValue
-import com.russhwolf.settings.serialization.serializedValue
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.CoroutineScope
+import com.russhwolf.settings.coroutines.FlowSettings
+import com.russhwolf.settings.coroutines.SuspendSettings
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.withContext
-import kotlinx.serialization.ExperimentalSerializationApi
-import org.mifos.core.datastore.model.SampleUser
+import kotlinx.coroutines.flow.map
+import kotlinx.serialization.KSerializer
+import kotlinx.serialization.json.Json
 
-private const val USER_KEY = "sample_user"
-private const val LAST_LOGIN_KEY = "last_login"
+const val USER_KEY = "sample_user"
 
+@Suppress("TooManyFunctions")
+@OptIn(ExperimentalSettingsApi::class)
 class UserPreferencesDataStore(
-    private val settings: Settings,
-    private val dispatcher: CoroutineDispatcher,
-    scope: CoroutineScope,
+    private val suspendSettings: SuspendSettings,
+    val flowSettings: FlowSettings,
 ) {
 
     // --- Basic Operations ---
 
     // Store primitive value
-    fun putLastLogin(timeStamp: Long) {
-        settings.putLong(LAST_LOGIN_KEY, timeStamp)
+
+    suspend fun putInt(key: String, value: Int) {
+        suspendSettings.putInt(key, value)
     }
 
-    // Retrieve primitive value with default
-    fun getLastLogin(default: Long = 0): Long {
-        return settings.getLong(LAST_LOGIN_KEY, default)
+    suspend fun getInt(key: String, default: Int): Int {
+        return suspendSettings.getInt(key, default)
+    }
+
+    suspend fun getNullableInt(key: String): Int? {
+        return suspendSettings.getIntOrNull(key)
+    }
+
+    suspend fun putLong(key: String, value: Long) {
+        suspendSettings.putLong(key, value)
+    }
+
+    suspend fun getLong(key: String, default: Long): Long {
+        return suspendSettings.getLong(key, default)
     }
 
     // Retrieve nullable primitive
-    fun getLastLoginOrNull(): Long? {
-        return settings.getLongOrNull(LAST_LOGIN_KEY)
+    suspend fun getNullableLong(key: String): Long? {
+        return suspendSettings.getLongOrNull(key)
     }
 
-    // Property delegate for primitive
-    val lastLogin: Long by settings.long(LAST_LOGIN_KEY, defaultValue = 0)
+    suspend fun putFloat(key: String, value: Float) {
+        suspendSettings.putFloat(key, value)
+    }
+
+    suspend fun getFloat(key: String, default: Float): Float {
+        return suspendSettings.getFloat(key, default)
+    }
+
+    suspend fun getNullableFloat(key: String): Float? {
+        return suspendSettings.getFloatOrNull(key)
+    }
+
+    suspend fun putDouble(key: String, value: Double) {
+        suspendSettings.putDouble(key, value)
+    }
+
+    suspend fun getDouble(key: String, default: Double): Double {
+        return suspendSettings.getDouble(key, default)
+    }
+
+    suspend fun getNullableDouble(key: String): Double? {
+        return suspendSettings.getDoubleOrNull(key)
+    }
+
+    suspend fun putString(key: String, value: String) {
+        suspendSettings.putString(key, value)
+    }
+
+    suspend fun getString(key: String, default: String): String {
+        return suspendSettings.getString(key, default)
+    }
+
+    suspend fun getNullableString(key: String): String? {
+        return suspendSettings.getStringOrNull(key)
+    }
+
+    suspend fun putBoolean(key: String, value: Boolean) {
+        suspendSettings.putBoolean(key, value)
+    }
+
+    suspend fun getBoolean(key: String, default: Boolean): Boolean {
+        return suspendSettings.getBoolean(key, default)
+    }
+
+    suspend fun getNullableBoolean(key: String): Boolean? {
+        return suspendSettings.getBooleanOrNull(key)
+    }
 
     // Check key existence
-    fun hasLastLogin(): Boolean {
-        return settings.hasKey(LAST_LOGIN_KEY)
+    suspend fun hasKey(key: String): Boolean {
+        return suspendSettings.hasKey(key)
     }
 
-    // Remove key
-    fun removeLastLogin() {
-        settings.remove(LAST_LOGIN_KEY)
+    suspend fun removeValue(key: String) {
+        suspendSettings.remove(key)
     }
 
     // Clear all
     suspend fun clearAll() {
-        withContext(dispatcher) {
-            settings.clear()
-        }
+        suspendSettings.clear()
     }
 
     // Get all keys and size
-    val allKeys: Set<String> get() = settings.keys
-    val size: Int get() = settings.size
+    suspend fun getAllKeys(): Set<String> {
+        return suspendSettings.keys()
+    }
+
+    suspend fun getSize(): Int {
+        return suspendSettings.size()
+    }
 
     // --- Serialization Operations ---
 
     // Store serialized object
-    @OptIn(ExperimentalSerializationApi::class, ExperimentalSettingsApi::class)
-    suspend fun saveUser(user: SampleUser) {
-        withContext(dispatcher) {
-            settings.encodeValue(
-                serializer = SampleUser.serializer(),
-                key = USER_KEY,
-                value = user,
-            )
-            _userFlow.value = user
-        }
-    }
-
-    // Retrieve serialized object with default
-    @OptIn(ExperimentalSerializationApi::class, ExperimentalSettingsApi::class)
-    fun getUser(): SampleUser {
-        return settings.decodeValue(
-            serializer = SampleUser.serializer(),
-            key = USER_KEY,
-            defaultValue = SampleUser.DEFAULT,
+    suspend fun <T> putSerializableData(key: String, value: T, serializer: KSerializer<T>) {
+        val json = Json.encodeToString(
+            serializer = serializer,
+            value = value,
         )
+        suspendSettings.putString(key = key, value = json)
     }
 
-    // Retrieve nullable serialized object
-    @OptIn(ExperimentalSerializationApi::class, ExperimentalSettingsApi::class)
-    fun getUserOrNull(): SampleUser? {
-        return settings.decodeValueOrNull(
-            serializer = SampleUser.serializer(),
-            key = USER_KEY,
+    //    Get serialized object with default value
+    suspend fun <T> getSerializedData(
+        key: String,
+        defaultValue: T,
+        serializer: KSerializer<T>,
+    ): T {
+        val json = suspendSettings.getStringOrNull(key = key) ?: return defaultValue
+        return Json.decodeFromString(
+            deserializer = serializer,
+            string = json,
         )
-    }
-
-    // Property delegate for serialized object
-    @OptIn(ExperimentalSerializationApi::class, ExperimentalSettingsApi::class)
-    val userProperty: SampleUser by settings.serializedValue(
-        serializer = SampleUser.serializer(),
-        key = USER_KEY,
-        defaultValue = SampleUser.DEFAULT,
-    )
-
-    // Check serialized object existence
-    @OptIn(ExperimentalSerializationApi::class, ExperimentalSettingsApi::class)
-    fun hasUser(): Boolean {
-        return settings.containsValue(
-            serializer = SampleUser.serializer(),
-            key = USER_KEY,
-        )
-    }
-
-    // Remove serialized object
-    @OptIn(ExperimentalSerializationApi::class, ExperimentalSettingsApi::class)
-    suspend fun removeUser() {
-        withContext(dispatcher) {
-            settings.removeValue(
-                serializer = SampleUser.serializer(),
-                key = USER_KEY,
-            )
-            _userFlow.value = SampleUser.DEFAULT
-        }
     }
 
     // --- Listener Operations ---
-    private val observableSettings: ObservableSettings = settings as ObservableSettings
-    fun observeAgeChange(onChange: (Int) -> Int): SettingsListener {
-        return observableSettings.addIntListener(key = "user_age", defaultValue = 0) { value ->
-            onChange(value)
+
+    inline fun <reified T> observeKeyFlow(
+        key: String,
+        defaultValue: T,
+        serializer: KSerializer<T>?,
+    ): Flow<T> {
+        return when (T::class) {
+            Int::class -> flowSettings.getIntFlow(key, defaultValue as Int) as Flow<T>
+            Long::class -> flowSettings.getLongFlow(key, defaultValue as Long) as Flow<T>
+            Float::class -> flowSettings.getFloatFlow(key, defaultValue as Float) as Flow<T>
+            Double::class -> flowSettings.getDoubleFlow(key, defaultValue as Double) as Flow<T>
+            String::class -> flowSettings.getStringFlow(key, defaultValue as String) as Flow<T>
+            Boolean::class -> flowSettings.getBooleanFlow(key, defaultValue as Boolean) as Flow<T>
+            else -> {
+                require(serializer != null) { "Unsupported type or no serializer provided for ${T::class}" }
+                flowSettings.getStringFlow(key, Json.encodeToString(serializer, defaultValue))
+                    .map { jsonString ->
+                        Json.decodeFromString(serializer, jsonString)
+                    }
+            }
         }
     }
 
-    // --- Coroutine/Flow Operations ---
-    private val _userFlow = MutableStateFlow(getUser())
-
-    // Flow for serialized user
-    val userFlow: StateFlow<SampleUser> get() = _userFlow.asStateFlow()
-
-    // Flow for primitive (requires ObservableSettings)
-    @OptIn(ExperimentalSettingsApi::class)
-    val lastLoginFlow: Flow<Long> = observableSettings.getLongFlow(
-        key = LAST_LOGIN_KEY,
-        defaultValue = 0L,
-    )
-
-    // StateFlow for primitive
-    @OptIn(ExperimentalSettingsApi::class)
-    val lastLoginStateFlow: StateFlow<Long> = observableSettings.getLongStateFlow(
-        key = LAST_LOGIN_KEY,
-        coroutineScope = scope,
-        defaultValue = 0L,
-    )
-
-    // Update specific field (example with serialization)
-    suspend fun updateUserName(newName: String) {
-        withContext(dispatcher) {
-            val currentUser = getUser()
-            val updatedUser = currentUser.copy(name = newName)
-            saveUser(updatedUser)
+    inline fun <reified T> observeNullableKeyFlow(
+        key: String,
+        serializer: KSerializer<T>?,
+    ): Flow<T?> {
+        return when (T::class) {
+            Int::class -> flowSettings.getIntOrNullFlow(key) as Flow<T?>
+            Long::class -> flowSettings.getLongOrNullFlow(key) as Flow<T?>
+            Float::class -> flowSettings.getFloatOrNullFlow(key) as Flow<T?>
+            Double::class -> flowSettings.getDoubleOrNullFlow(key) as Flow<T?>
+            String::class -> flowSettings.getStringOrNullFlow(key) as Flow<T?>
+            Boolean::class -> flowSettings.getBooleanOrNullFlow(key) as Flow<T?>
+            else -> {
+                require(serializer != null) { "Unsupported type or no serializer provided for ${T::class}" }
+                flowSettings.getStringOrNullFlow(key)
+                    .map { jsonString ->
+                        jsonString?.let { Json.decodeFromString(serializer, jsonString) }
+                    }
+            }
         }
     }
 }

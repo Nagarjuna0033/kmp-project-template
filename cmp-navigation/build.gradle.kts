@@ -20,6 +20,7 @@ kotlin {
             // Core Modules
             implementation(projects.core.data)
             implementation(projects.core.common)
+            implementation(projects.core.datastore)
 
             implementation(projects.feature.home)
             implementation(projects.feature.profile)
