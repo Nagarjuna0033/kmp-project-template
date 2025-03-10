@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Mifos Initiative
+ * Copyright 2025 Mifos Initiative
  *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -13,26 +13,22 @@ plugins {
 }
 
 android {
-    namespace = "org.mifos.core.datastore"
-    defaultConfig {
-        consumerProguardFiles("consumer-rules.pro")
-    }
-    testOptions {
-        unitTests {
-            isReturnDefaultValues = true
-        }
-    }
+    namespace = "org.mifos.corebase.datastore"
 }
 
 kotlin {
     sourceSets {
         commonMain.dependencies {
+            implementation(libs.multiplatform.settings)
+            implementation(libs.multiplatform.settings.serialization)
+            implementation(libs.multiplatform.settings.coroutines)
             implementation(libs.kotlinx.coroutines.core)
-            implementation(libs.kotlinx.serialization.core)
-            implementation(projects.core.model)
             implementation(projects.core.common)
+            implementation(libs.kotlinx.serialization.json)
+        }
 
-            api(projects.coreBase.datastore)
+        commonTest.dependencies {
+            implementation(libs.multiplatform.settings.test)
         }
     }
 }
