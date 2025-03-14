@@ -9,13 +9,19 @@
  */
 package org.mifos.core.datastore
 
-import org.mifos.core.datastore.model.SampleUser
+import kotlinx.coroutines.flow.Flow
+import org.mifos.core.model.DarkThemeConfig
+import org.mifos.core.model.ThemeBrand
+import org.mifos.core.model.UserData
 
 interface UserPreferencesRepository {
+    val userData: Flow<UserData>
 
-    suspend fun saveUser(key: String, user: SampleUser)
-    suspend fun getUser(key: String, defaultValue: SampleUser): SampleUser
+    suspend fun setThemeBrand(themeBrand: ThemeBrand)
+    suspend fun setDarkThemeConfig(darkThemeConfig: DarkThemeConfig)
+    suspend fun setDynamicColorPreference(useDynamicColor: Boolean)
 
-    suspend fun getDoubleNumber(key: String, defaultValue: Double): Double
-    suspend fun saveDoubleNumber(key: String, number: Double)
+    suspend fun getThemeBrand(themeBrand: ThemeBrand)
+    suspend fun getDarkThemeConfig(darkThemeConfig: DarkThemeConfig)
+    suspend fun getDynamicColorPreference(useDynamicColor: Boolean)
 }
