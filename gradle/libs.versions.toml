@@ -269,6 +269,7 @@ kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 android-application-convention = { id = "org.convention.android.application", version = "unspecified" }
 android-application-compose-convention = { id = "org.convention.android.application.compose", version = "unspecified" }
 android-application-flavors-convention = { id = "org.convention.android.application.flavors", version = "unspecified" }
+android-library-convention = { id = "org.convention.android.library", version = "unspecified" }
 
 # KMP & CMP Plugins
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
