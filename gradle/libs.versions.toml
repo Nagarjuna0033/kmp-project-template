@@ -13,6 +13,7 @@ androidxComposeCompiler = "1.5.15"
 androidxComposeMaterial3Adaptive = "1.0.0"
 androidxComposeRuntimeTracing = "1.7.6"
 androidxCoreSplashscreen = "1.0.1"
+androidXEspresso = "3.6.1"
 androidxLifecycle = "2.8.7"
 androidxMetrics = "1.0.0-beta01"
 androidxNavigation = "2.8.5"
@@ -252,6 +253,7 @@ moko-permission = { group = "dev.icerock.moko", name = "permissions", version.re
 moko-permission-compose = { group = "dev.icerock.moko", name = "permissions-compose", version.ref = "mokoPermission" }
 
 window-size = { group = "dev.chrisbanes.material3", name = "material3-window-size-class-multiplatform", version.ref = "windowsSizeClass" }
+androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "androidXEspresso" }
 
 [bundles]
 androidx-compose-ui-test = [

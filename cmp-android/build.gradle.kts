@@ -104,6 +104,7 @@ dependencies {
 
     androidTestImplementation(libs.androidx.compose.ui.test)
     androidTestImplementation(libs.androidx.test.ext.junit)
+    androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(projects.testing)
 
     testImplementation(projects.testing)
