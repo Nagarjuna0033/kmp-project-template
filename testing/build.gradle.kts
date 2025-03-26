@@ -19,6 +19,7 @@ android {
 kotlin {
     sourceSets {
         commonMain.dependencies {
+            api(projects.core.database)
             api(projects.core.common)
             api(projects.coreBase.datastore)
             api(libs.kotlinx.coroutines.test)
@@ -27,8 +28,27 @@ kotlin {
             implementation(libs.multiplatform.settings)
             implementation(libs.multiplatform.settings.test)
             implementation(libs.kotlinx.serialization.json)
-            implementation(libs.koin.core)
-            implementation(libs.koin.test)
+            api(libs.koin.core)
+            api(libs.koin.test)
+        }
+
+        androidMain.dependencies {
+            implementation(libs.androidx.test.ext.junit)
+            implementation(libs.androidx.room.testing)
+            implementation(libs.androidx.test.core)
+            implementation(libs.androidx.espresso.core)
+        }
+
+        nativeMain.dependencies {
+            nativeMain.dependencies {
+                implementation(libs.androidx.room.runtime)
+                implementation(libs.androidx.sqlite.bundled)
+            }
+        }
+
+        desktopMain.dependencies {
+            implementation(libs.androidx.room.runtime)
+            implementation(libs.androidx.sqlite.bundled)
         }
     }
 }

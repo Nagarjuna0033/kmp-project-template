@@ -9,9 +9,6 @@
  */
 package org.mifos.core.database
 
-import android.content.Context
-import androidx.room.Room
-import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
@@ -19,20 +16,25 @@ import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.runner.RunWith
+import org.koin.core.context.startKoin
+import org.koin.core.context.stopKoin
+import org.koin.test.KoinTest
+import org.koin.test.inject
 import org.mifos.core.database.dao.SampleDao
 import org.mifos.core.database.entity.SampleEntity
+import org.mifos.testing.di.TestDatabaseModule
 import kotlin.test.Test
 
 @RunWith(AndroidJUnit4::class)
-class SampleDaoTest {
-    private lateinit var db: AppDatabase
-    private lateinit var dao: SampleDao
+class SampleDaoTest : KoinTest {
+    private val db: AppDatabase by inject()
+    private val dao: SampleDao by inject()
 
     @Before
     fun setup() {
-        val context = ApplicationProvider.getApplicationContext<Context>()
-        db = Room.inMemoryDatabaseBuilder(context, AppDatabase::class.java).build()
-        dao = db.sampleDao
+        startKoin {
+            modules(TestDatabaseModule)
+        }
     }
 
     @Test
@@ -54,5 +56,6 @@ class SampleDaoTest {
     @After
     fun tearDown() {
         db.close()
+        stopKoin()
     }
 }

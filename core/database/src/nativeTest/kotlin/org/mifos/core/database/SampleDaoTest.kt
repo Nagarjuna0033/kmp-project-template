@@ -9,24 +9,29 @@
  */
 package org.mifos.core.database
 
-import androidx.room.Room
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
+import org.koin.core.context.startKoin
+import org.koin.core.context.stopKoin
+import org.koin.test.KoinTest
+import org.koin.test.inject
 import org.mifos.core.database.dao.SampleDao
 import org.mifos.core.database.entity.SampleEntity
+import org.mifos.testing.di.TestDatabaseModule
 import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-class SampleDaoTest {
-    private lateinit var db: AppDatabase
-    private lateinit var dao: SampleDao
+class SampleDaoTest : KoinTest {
+    private val db: AppDatabase by inject()
+    private val dao: SampleDao by inject()
 
     @BeforeTest
     fun setup() {
-        db = Room.inMemoryDatabaseBuilder<AppDatabase>().build()
-        dao = db.sampleDao
+        startKoin {
+            modules(TestDatabaseModule)
+        }
     }
 
     @Test
@@ -48,5 +53,6 @@ class SampleDaoTest {
     @AfterTest
     fun tearDown() {
         db.close()
+        stopKoin()
     }
 }

@@ -9,28 +9,29 @@
  */
 package org.mifos.core.database
 
-import androidx.room.Room
-import androidx.sqlite.driver.bundled.BundledSQLiteDriver
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
+import org.koin.core.context.startKoin
+import org.koin.core.context.stopKoin
+import org.koin.test.KoinTest
+import org.koin.test.inject
 import org.mifos.core.database.dao.SampleDao
 import org.mifos.core.database.entity.SampleEntity
+import org.mifos.testing.di.TestDatabaseModule
 
-class SampleDaoTest {
-    private lateinit var db: AppDatabase
-    private lateinit var dao: SampleDao
+class SampleDaoTest : KoinTest {
+    private val db: AppDatabase by inject()
+    private val dao: SampleDao by inject()
 
     @Before
     fun setup() {
-        db = Room.inMemoryDatabaseBuilder<AppDatabase>()
-            .setDriver(BundledSQLiteDriver())
-            .build()
-
-        dao = db.sampleDao
+        startKoin {
+            modules(TestDatabaseModule)
+        }
     }
 
     @Test
@@ -52,5 +53,6 @@ class SampleDaoTest {
     @After
     fun tearDown() {
         db.close()
+        stopKoin()
     }
 }
