@@ -12,6 +12,7 @@ package org.mifos.testing.di
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.StandardTestDispatcher
+import kotlinx.coroutines.test.TestCoroutineScheduler
 import kotlinx.coroutines.test.TestDispatcher
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import org.koin.core.module.Module
@@ -21,8 +22,15 @@ import org.mifos.core.common.di.AppDispatchers
 
 @OptIn(ExperimentalCoroutinesApi::class)
 val TestDispatchersModule: Module = module {
-    single<TestDispatcher> { UnconfinedTestDispatcher() }
-    single<CoroutineDispatcher>(named(AppDispatchers.IO.name)) { StandardTestDispatcher() }
-    single<CoroutineDispatcher>(named(AppDispatchers.Default.name)) { StandardTestDispatcher() }
-    single<CoroutineDispatcher>(named(AppDispatchers.Unconfined.name)) { UnconfinedTestDispatcher() }
+    single { TestCoroutineScheduler() }
+    single<TestDispatcher> { UnconfinedTestDispatcher(scheduler = get()) }
+    single<CoroutineDispatcher>(named(AppDispatchers.IO.name)) {
+        StandardTestDispatcher(scheduler = get())
+    }
+    single<CoroutineDispatcher>(named(AppDispatchers.Default.name)) {
+        StandardTestDispatcher(scheduler = get())
+    }
+    single<CoroutineDispatcher>(named(AppDispatchers.Unconfined.name)) {
+        UnconfinedTestDispatcher(scheduler = get())
+    }
 }
