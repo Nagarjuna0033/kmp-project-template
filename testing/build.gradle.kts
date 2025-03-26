@@ -9,6 +9,7 @@
  */
 plugins {
     alias(libs.plugins.kmp.library.convention)
+    id("kotlinx-serialization")
 }
 
 android {
@@ -18,10 +19,14 @@ android {
 kotlin {
     sourceSets {
         commonMain.dependencies {
-            api(libs.kotlinx.coroutines.test)
             api(projects.core.common)
+            api(projects.coreBase.datastore)
+            api(libs.kotlinx.coroutines.test)
             api(libs.kotlin.test)
 
+            implementation(libs.multiplatform.settings)
+            implementation(libs.multiplatform.settings.test)
+            implementation(libs.kotlinx.serialization.json)
             implementation(libs.koin.core)
             implementation(libs.koin.test)
         }
