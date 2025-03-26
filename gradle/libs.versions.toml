@@ -5,6 +5,7 @@ androidGradlePlugin = "8.7.3"
 androidTools = "31.7.3"
 
 # AndroidX Dependencies
+androidxTest = "1.6.1"
 androidx-test-ext-junit = "1.2.1"
 androidxActivity = "1.9.3"
 androidxBrowser = "1.8.0"
@@ -139,8 +140,11 @@ androidx-room-gradle-plugin = { module = "androidx.room:room-gradle-plugin", ver
 androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "room" }
 androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
 androidx-sqlite-bundled = { module = "androidx.sqlite:sqlite-bundled", version.ref = "sqliteBundled" }
+androidx-room-testing = { module = "androidx.room:room-testing", version.ref = "room" }
 
+androidx-test-rules = { group = "androidx.test", name = "rules", version.ref = "androidxTest" }
 androidx-test-ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "androidx-test-ext-junit" }
+androidx-test-core = { module = "androidx.test:core", version.ref = "androidxTest" }
 androidx-tracing-ktx = { group = "androidx.tracing", name = "tracing-ktx", version.ref = "androidxTracing" }
 
 ktlint-gradlePlugin = { group = "org.jlleitschuh.gradle", name = "ktlint-gradle", version.ref = "ktlint" }

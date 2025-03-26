@@ -16,6 +16,9 @@ plugins {
 
 android {
     namespace = "org.mifos.core.database"
+    defaultConfig {
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+    }
 }
 
 kotlin {
@@ -24,6 +27,14 @@ kotlin {
         androidMain.dependencies {
             implementation(libs.koin.android)
             implementation(libs.androidx.room.runtime)
+        }
+
+        androidInstrumentedTest.dependencies {
+            implementation(libs.androidx.test.ext.junit)
+            implementation(libs.androidx.room.testing)
+            implementation(libs.androidx.test.core)
+            implementation(libs.kotlin.test)
+            implementation(libs.androidx.espresso.core)
         }
 
         nativeMain.dependencies {
