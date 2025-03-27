@@ -56,11 +56,6 @@ gradlePlugin {
             implementationClass = "AndroidApplicationFlavorsConventionPlugin"
         }
 
-        register("androidLibrary") {
-            id = "org.convention.android.library"
-            implementationClass = "AndroidLibraryConventionPlugin"
-        }
-
         // KMP & CMP Plugins
         register("cmpFeature") {
             id = "org.convention.cmp.feature"
