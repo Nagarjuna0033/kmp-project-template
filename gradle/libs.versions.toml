@@ -25,6 +25,7 @@ coreKtxVersion = "1.15.0"
 
 # Testing Dependencies
 junitVersion = "4.13.2"
+robolectric = "4.14.1"
 truth = "1.4.4"
 
 # Utility Dependencies
@@ -149,6 +150,7 @@ androidx-tracing-ktx = { group = "androidx.tracing", name = "tracing-ktx", versi
 
 ktlint-gradlePlugin = { group = "org.jlleitschuh.gradle", name = "ktlint-gradle", version.ref = "ktlint" }
 detekt-formatting = { group = "io.gitlab.arturbosch.detekt", name = "detekt-formatting", version.ref = "detekt" }
+robolectric = { module = "org.robolectric:robolectric", version.ref = "robolectric" }
 spotless-gradle = { group = "com.diffplug.spotless", name = "spotless-plugin-gradle", version.ref = "spotlessVersion" }
 detekt-gradlePlugin = { group = "io.gitlab.arturbosch.detekt", name = "detekt-gradle-plugin", version.ref = "detekt" }
 twitter-detekt-compose = { group = "com.twitter.compose.rules", name = "detekt", version.ref = "twitter-detekt-compose" }

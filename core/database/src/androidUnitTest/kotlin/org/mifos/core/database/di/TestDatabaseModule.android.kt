@@ -7,16 +7,19 @@
  *
  * See See https://github.com/openMF/kmp-project-template/blob/main/LICENSE
  */
-package org.mifos.testing.di
+package org.mifos.core.database.di
 
+import androidx.room.Room
+import androidx.test.core.app.ApplicationProvider
 import org.koin.core.module.Module
 import org.koin.dsl.module
 import org.mifos.core.database.AppDatabase
 
-val TestDatabaseModule = module {
-    includes(testPlatformModule)
-    single { get<AppDatabase>().sampleDao }
+actual val testPlatformModule: Module = module {
+    single {
+        Room.inMemoryDatabaseBuilder(
+            context = ApplicationProvider.getApplicationContext(),
+            AppDatabase::class.java,
+        ).build()
+    }
 }
-
-@Suppress("NO_ACTUAL_FOR_EXPECT")
-expect val testPlatformModule: Module

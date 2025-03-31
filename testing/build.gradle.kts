@@ -31,24 +31,5 @@ kotlin {
             api(libs.koin.core)
             api(libs.koin.test)
         }
-
-        androidMain.dependencies {
-            implementation(libs.androidx.test.ext.junit)
-            implementation(libs.androidx.room.testing)
-            implementation(libs.androidx.test.core)
-            implementation(libs.androidx.espresso.core)
-        }
-
-        nativeMain.dependencies {
-            nativeMain.dependencies {
-                implementation(libs.androidx.room.runtime)
-                implementation(libs.androidx.sqlite.bundled)
-            }
-        }
-
-        desktopMain.dependencies {
-            implementation(libs.androidx.room.runtime)
-            implementation(libs.androidx.sqlite.bundled)
-        }
     }
 }

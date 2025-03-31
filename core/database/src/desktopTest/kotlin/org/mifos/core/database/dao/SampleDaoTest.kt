@@ -7,7 +7,7 @@
  *
  * See See https://github.com/openMF/kmp-project-template/blob/main/LICENSE
  */
-package org.mifos.core.database
+package org.mifos.core.database.dao
 
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
@@ -19,9 +19,9 @@ import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
 import org.koin.test.KoinTest
 import org.koin.test.inject
-import org.mifos.core.database.dao.SampleDao
+import org.mifos.core.database.AppDatabase
+import org.mifos.core.database.di.TestDatabaseModule
 import org.mifos.core.database.entity.SampleEntity
-import org.mifos.testing.di.TestDatabaseModule
 
 class SampleDaoTest : KoinTest {
     private val db: AppDatabase by inject()

@@ -38,22 +38,20 @@ kotlin {
             implementation(projects.testing)
         }
 
+        androidUnitTest.dependencies {
+            implementation(libs.androidx.test.ext.junit)
+            implementation(libs.robolectric)
+            implementation(libs.androidx.test.core)
+        }
+
         nativeMain.dependencies {
             implementation(libs.androidx.room.runtime)
             implementation(libs.androidx.sqlite.bundled)
         }
 
-        nativeTest.dependencies {
-            implementation(projects.testing)
-        }
-
         desktopMain.dependencies {
             implementation(libs.androidx.room.runtime)
             implementation(libs.androidx.sqlite.bundled)
-        }
-
-        desktopTest.dependencies {
-            implementation(projects.testing)
         }
 
         commonMain.dependencies {

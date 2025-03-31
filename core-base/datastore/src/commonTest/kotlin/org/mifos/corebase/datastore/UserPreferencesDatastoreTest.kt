@@ -16,8 +16,8 @@ import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
 import org.koin.test.KoinTest
 import org.koin.test.inject
+import org.mifos.corebase.datastore.di.TestCoreDataStoreModule
 import org.mifos.testing.data.usersTestData
-import org.mifos.testing.di.TestCoreDataStoreModule
 import org.mifos.testing.di.TestDispatchersModule
 import org.mifos.testing.model.TestUserData
 import kotlin.test.AfterTest

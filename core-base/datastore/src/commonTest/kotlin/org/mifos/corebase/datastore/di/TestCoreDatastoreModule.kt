@@ -7,7 +7,7 @@
  *
  * See See https://github.com/openMF/kmp-project-template/blob/main/LICENSE
  */
-package org.mifos.testing.di
+package org.mifos.corebase.datastore.di
 
 import com.russhwolf.settings.MapSettings
 import com.russhwolf.settings.Settings

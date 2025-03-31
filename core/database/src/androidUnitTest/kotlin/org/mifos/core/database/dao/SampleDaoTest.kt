@@ -7,7 +7,7 @@
  *
  * See See https://github.com/openMF/kmp-project-template/blob/main/LICENSE
  */
-package org.mifos.core.database
+package org.mifos.core.database.dao
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import kotlinx.coroutines.flow.first
@@ -20,9 +20,9 @@ import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
 import org.koin.test.KoinTest
 import org.koin.test.inject
-import org.mifos.core.database.dao.SampleDao
+import org.mifos.core.database.AppDatabase
+import org.mifos.core.database.di.TestDatabaseModule
 import org.mifos.core.database.entity.SampleEntity
-import org.mifos.testing.di.TestDatabaseModule
 import kotlin.test.Test
 
 @RunWith(AndroidJUnit4::class)
