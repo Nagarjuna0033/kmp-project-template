@@ -9,17 +9,25 @@
  */
 package org.mifos.core.database.di
 
+import android.content.Context
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
+import kotlinx.coroutines.CoroutineDispatcher
 import org.koin.core.module.Module
+import org.koin.core.qualifier.named
 import org.koin.dsl.module
+import org.mifos.core.common.di.AppDispatchers
 import org.mifos.core.database.AppDatabase
+import kotlin.coroutines.CoroutineContext
 
 actual val testPlatformModule: Module = module {
-    single {
+    val context = ApplicationProvider.getApplicationContext<Context>()
+    factory<AppDatabase> {
         Room.inMemoryDatabaseBuilder(
-            context = ApplicationProvider.getApplicationContext(),
+            context = context,
             AppDatabase::class.java,
-        ).build()
+        )
+            .setQueryCoroutineContext(get<CoroutineDispatcher>(named(AppDispatchers.IO.name)) as CoroutineContext)
+            .build()
     }
 }

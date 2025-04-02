@@ -5,7 +5,6 @@ androidGradlePlugin = "8.7.3"
 androidTools = "31.7.3"
 
 # AndroidX Dependencies
-androidxTest = "1.6.1"
 androidx-test-ext-junit = "1.2.1"
 androidxActivity = "1.9.3"
 androidxBrowser = "1.8.0"
@@ -14,7 +13,6 @@ androidxComposeCompiler = "1.5.15"
 androidxComposeMaterial3Adaptive = "1.0.0"
 androidxComposeRuntimeTracing = "1.7.6"
 androidxCoreSplashscreen = "1.0.1"
-androidXEspresso = "3.6.1"
 androidxLifecycle = "2.8.7"
 androidxMetrics = "1.0.0-beta01"
 androidxNavigation = "2.8.5"
@@ -25,7 +23,6 @@ coreKtxVersion = "1.15.0"
 
 # Testing Dependencies
 junitVersion = "4.13.2"
-robolectric = "4.14.1"
 truth = "1.4.4"
 
 # Utility Dependencies
@@ -141,16 +138,11 @@ androidx-room-gradle-plugin = { module = "androidx.room:room-gradle-plugin", ver
 androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "room" }
 androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
 androidx-sqlite-bundled = { module = "androidx.sqlite:sqlite-bundled", version.ref = "sqliteBundled" }
-androidx-room-testing = { module = "androidx.room:room-testing", version.ref = "room" }
-
-androidx-test-rules = { group = "androidx.test", name = "rules", version.ref = "androidxTest" }
 androidx-test-ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "androidx-test-ext-junit" }
-androidx-test-core = { module = "androidx.test:core", version.ref = "androidxTest" }
 androidx-tracing-ktx = { group = "androidx.tracing", name = "tracing-ktx", version.ref = "androidxTracing" }
 
 ktlint-gradlePlugin = { group = "org.jlleitschuh.gradle", name = "ktlint-gradle", version.ref = "ktlint" }
 detekt-formatting = { group = "io.gitlab.arturbosch.detekt", name = "detekt-formatting", version.ref = "detekt" }
-robolectric = { module = "org.robolectric:robolectric", version.ref = "robolectric" }
 spotless-gradle = { group = "com.diffplug.spotless", name = "spotless-plugin-gradle", version.ref = "spotlessVersion" }
 detekt-gradlePlugin = { group = "io.gitlab.arturbosch.detekt", name = "detekt-gradle-plugin", version.ref = "detekt" }
 twitter-detekt-compose = { group = "com.twitter.compose.rules", name = "detekt", version.ref = "twitter-detekt-compose" }
@@ -259,7 +251,6 @@ moko-permission = { group = "dev.icerock.moko", name = "permissions", version.re
 moko-permission-compose = { group = "dev.icerock.moko", name = "permissions-compose", version.ref = "mokoPermission" }
 
 window-size = { group = "dev.chrisbanes.material3", name = "material3-window-size-class-multiplatform", version.ref = "windowsSizeClass" }
-androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "androidXEspresso" }
 
 [bundles]
 androidx-compose-ui-test = [

@@ -9,17 +9,21 @@
  */
 package org.mifos.corebase.datastore
 
-import kotlinx.coroutines.test.TestCoroutineScheduler
+import com.russhwolf.settings.MapSettings
+import com.russhwolf.settings.Settings
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.StandardTestDispatcher
+import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
-import kotlinx.serialization.serializer
+import kotlinx.coroutines.test.setMain
+import kotlinx.serialization.Serializable
 import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
+import org.koin.dsl.module
 import org.koin.test.KoinTest
 import org.koin.test.inject
-import org.mifos.corebase.datastore.di.TestCoreDataStoreModule
-import org.mifos.testing.data.usersTestData
-import org.mifos.testing.di.TestDispatchersModule
-import org.mifos.testing.model.TestUserData
 import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
@@ -27,87 +31,294 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
+/**
+ * A test class for verifying the functionality of [UserPreferencesDataStore] in a Kotlin Multiplatform project.
+ * This class uses Koin for dependency injection, [MapSettings] for in-memory key-value storage, and
+ * [StandardTestDispatcher] for controlling coroutine execution during tests. It tests various operations
+ * such as storing, retrieving, and managing key-value pairs, including primitive types and custom serialized types.
+ */
+@ExperimentalCoroutinesApi
 class UserPreferencesDatastoreTest : KoinTest {
-    private val datastore: UserPreferencesDataStore by inject()
-    private val testDispatcher: TestCoroutineScheduler by inject()
 
-    @BeforeTest
-    fun setup() {
-        startKoin {
-            modules(TestCoreDataStoreModule, TestDispatchersModule)
+    private val userPreferencesDataStore: UserPreferencesDataStore by inject()
+    private val testDispatcher = StandardTestDispatcher()
+
+    private val testModule = module {
+        single<Settings> { MapSettings() }
+        single<CoroutineDispatcher> { testDispatcher }
+        single {
+            UserPreferencesDataStore(
+                get(),
+                get(),
+            )
         }
     }
 
-    @Test
-    fun testPutAndGetStringValue() = runTest(testDispatcher) {
-        datastore.putValue("testKey", "testValue")
-        val retrievedValue = datastore.getValue("testKey", "")
-        assertEquals("testValue", retrievedValue)
+    /**
+     * A data class representing a user with an ID, name, and age, used for testing serialization
+     * in [UserPreferencesDataStore].
+     * This class is marked as [Serializable] to enable serialization with Kotlinx Serialization.
+     *
+     * @property id The unique identifier of the user.
+     * @property name The name of the user.
+     * @property age The age of the user.
+     */
+    @Serializable
+    data class User(
+        val id: Long,
+        val name: String,
+        val age: Int,
+    ) {
+        companion object {
+            /** A default user instance used as a fallback value in tests. */
+            val defaultUser = User(
+                id = 1,
+                name = "Mifos",
+                age = 15,
+            )
+        }
     }
 
-    @Test
-    fun testPutAndGetTestUserData() = runTest(testDispatcher) {
-        val userData = usersTestData.first()
-        datastore.putValue("testUser", userData, serializer<TestUserData?>())
-        val retrievedUserData = datastore.getValue("testUser", null, serializer<TestUserData?>())
-
-        assertEquals(userData, retrievedUserData)
+    /**
+     * Sets up the test environment before each test.
+     * Initializes Koin with the [testModule] to provide dependencies and sets the main dispatcher to [testDispatcher]
+     * for controlling coroutine execution.
+     */
+    @BeforeTest
+    fun setup() {
+        startKoin {
+            modules(testModule)
+        }
+        Dispatchers.setMain(testDispatcher)
     }
 
-    @Test
-    fun testDefaultValueWhenKeyNotExists() = runTest(testDispatcher) {
-        val retrievedValue = datastore.getValue("non_existent_key", "DefaultValue")
-        assertEquals("DefaultValue", retrievedValue) // Should return the default
-    }
-
-    @Test
-    fun testRemoveValue() = runTest(testDispatcher) {
-        datastore.putValue("test_key", "To be deleted")
-        datastore.removeValue("test_key")
-
-        val retrievedValue = datastore.getValue("test_key", "DefaultValue")
-        assertEquals("DefaultValue", retrievedValue) // Should return default after removal
-    }
-
-    @Test
-    fun testClearAll() = runTest(testDispatcher) {
-        datastore.putValue("key1", "Value1")
-        datastore.putValue("key2", "Value2")
-
-        datastore.clearAll()
-
-        val value1 = datastore.getValue("key1", "Default")
-        val value2 = datastore.getValue("key2", "Default")
-
-        assertEquals("Default", value1)
-        assertEquals("Default", value2) // Both should return default
-    }
-
-    @Test
-    fun testGetSizeAndGetAllKeys() = runTest(testDispatcher) {
-        datastore.putValue("key1", "Value1")
-        datastore.putValue("key2", "Value2")
-
-        val allKeys = datastore.getAllKeys()
-
-        assertEquals(2, datastore.getSize())
-        assertTrue { "key1" in allKeys }
-        assertTrue { "key2" in allKeys }
-    }
-
-    @Test
-    fun testHasKey() = runTest(testDispatcher) {
-        datastore.putValue("key1", "Value1")
-
-        val hasKey1 = datastore.hasKey("key1")
-        val hasKey2 = datastore.hasKey("key2")
-
-        assertTrue(hasKey1)
-        assertFalse(hasKey2)
-    }
-
+    /**
+     * Tears down the test environment after each test.
+     * Stops Koin to clean up the dependency injection container and resets the main dispatcher.
+     */
     @AfterTest
     fun tearDown() {
         stopKoin()
+        Dispatchers.resetMain()
+    }
+
+    /**
+     * Tests that [UserPreferencesDataStore.putValue] successfully stores an integer value.
+     * Verifies that the stored value can be retrieved using [UserPreferencesDataStore.getValue].
+     */
+    @Test
+    fun userPreferencesDataStore_PutIntValue_ValueStoredSuccessfully() = runTest(testDispatcher) {
+        // Arrange
+        val key = "user_score"
+        val value = 42
+
+        // Act
+        userPreferencesDataStore.putValue(key, value)
+        val retrievedValue = userPreferencesDataStore.getValue(key, 0)
+
+        // Assert
+        assertEquals(value, retrievedValue)
+    }
+
+    /**
+     * Tests that [UserPreferencesDataStore.putValue] successfully stores a string value.
+     * Verifies that the stored value can be retrieved using [UserPreferencesDataStore.getValue].
+     */
+    @Test
+    fun userPreferencesDataStore_PutStringValue_ValueStoredSuccessfully() = runTest(testDispatcher) {
+        // Arrange
+        val key = "user_name"
+        val value = "Alice"
+
+        // Act
+        userPreferencesDataStore.putValue(key, value)
+        val retrievedValue = userPreferencesDataStore.getValue(key, "")
+
+        // Assert
+        assertEquals(value, retrievedValue)
+    }
+
+    /**
+     * Tests that [UserPreferencesDataStore.putValue] successfully stores a custom type ([User]) with a serializer.
+     * Verifies that the stored value can be retrieved using [UserPreferencesDataStore.getValue] with
+     * the same serializer.
+     */
+    @Test
+    fun userPreferencesDataStore_PutCustomTypeWithSerializer_ValueStoredSuccessfully() = runTest(testDispatcher) {
+        // Arrange
+        val key = "user_data"
+        val user = User(1, "Bob", age = 20)
+
+        // Act
+        userPreferencesDataStore.putValue(key, user, User.serializer())
+        val retrievedUser = userPreferencesDataStore.getValue(
+            key,
+            User.defaultUser,
+            User.serializer(),
+        )
+
+        // Assert
+        assertEquals(user, retrievedUser)
+    }
+
+    /**
+     * Tests that [UserPreferencesDataStore.getValue] successfully retrieves a stored integer value.
+     * Verifies that the retrieved value matches the stored value.
+     */
+    @Test
+    fun userPreferencesDataStore_GetIntValue_ValueRetrievedSuccessfully() = runTest(testDispatcher) {
+        // Arrange
+        val key = "user_score"
+        val defaultValue = 0
+        val storedValue = 42
+
+        // Act
+        userPreferencesDataStore.putValue(key, storedValue)
+        val result = userPreferencesDataStore.getValue(key, defaultValue)
+
+        // Assert
+        assertEquals(storedValue, result)
+    }
+
+    /**
+     * Tests that [UserPreferencesDataStore.getValue] successfully retrieves a stored string value.
+     * Verifies that the retrieved value matches the stored value.
+     */
+    @Test
+    fun userPreferencesDataStore_GetStringValue_ValueRetrievedSuccessfully() = runTest(testDispatcher) {
+        // Arrange
+        val key = "user_name"
+        val defaultValue = "Unknown"
+        val storedValue = "Alice"
+
+        // Act
+        userPreferencesDataStore.putValue(key, storedValue)
+        val result = userPreferencesDataStore.getValue(key, defaultValue)
+
+        // Assert
+        assertEquals(storedValue, result)
+    }
+
+    /**
+     * Tests that [UserPreferencesDataStore.getValue] successfully retrieves a
+     * stored custom type ([User]) with a serializer.
+     * Verifies that the retrieved value matches the stored value.
+     */
+    @Test
+    fun userPreferencesDataStore_GetCustomTypeWithSerializer_ValueRetrievedSuccessfully() = runTest(testDispatcher) {
+        // Arrange
+        val key = "user_data"
+        val storedValue = User(1, "Bob", age = 20)
+
+        // Act
+        userPreferencesDataStore.putValue(key, storedValue, User.serializer())
+        val result = userPreferencesDataStore.getValue(key, User.defaultUser, User.serializer())
+
+        // Assert
+        assertEquals(storedValue, result)
+    }
+
+    /**
+     * Tests that [UserPreferencesDataStore.hasKey] correctly identifies the existence of a key.
+     * Verifies that a key exists after storing a value.
+     */
+    @Test
+    fun userPreferencesDataStore_HasKeyCheck_KeyExists() = runTest(testDispatcher) {
+        // Arrange
+        val key = "user_score"
+
+        // Act
+        userPreferencesDataStore.putValue(key, 42)
+        val result = userPreferencesDataStore.hasKey(key)
+
+        // Assert
+        assertTrue(result)
+    }
+
+    /**
+     * Tests that [UserPreferencesDataStore.hasKey] correctly identifies the absence of a key.
+     * Verifies that a key does not exist when no value has been stored.
+     */
+    @Test
+    fun userPreferencesDataStore_HasKeyCheck_KeyDoesNotExist() = runTest(testDispatcher) {
+        // Arrange
+        val key = "user_score"
+
+        // Act
+        val result = userPreferencesDataStore.hasKey(key)
+
+        // Assert
+        assertFalse(result)
+    }
+
+    /**
+     * Tests that [UserPreferencesDataStore.removeValue] successfully removes a stored value.
+     * Verifies that the key no longer exists after removal.
+     */
+    @Test
+    fun userPreferencesDataStore_RemoveValue_ValueRemovedSuccessfully() = runTest(testDispatcher) {
+        // Arrange
+        val key = "user_score"
+
+        // Act
+        userPreferencesDataStore.putValue(key, 42)
+        userPreferencesDataStore.removeValue(key)
+        val result = userPreferencesDataStore.hasKey(key)
+
+        // Assert
+        assertFalse(result)
+    }
+
+    /**
+     * Tests that [UserPreferencesDataStore.clearAll] successfully clears all stored values.
+     * Verifies that the size of the data store is zero after clearing.
+     */
+    @Test
+    fun userPreferencesDataStore_ClearAll_AllValuesClearedSuccessfully() = runTest(testDispatcher) {
+        // Arrange
+        val key1 = "user_score"
+        val key2 = "user_name"
+        userPreferencesDataStore.putValue(key1, 42)
+        userPreferencesDataStore.putValue(key2, "Alice")
+
+        // Act
+        userPreferencesDataStore.clearAll()
+        val result = userPreferencesDataStore.getSize()
+
+        // Assert
+        assertEquals(0, result)
+    }
+
+    /**
+     * Tests that [UserPreferencesDataStore.getAllKeys] successfully retrieves all stored keys.
+     * Verifies that the retrieved keys match the expected set of keys.
+     */
+    @Test
+    fun userPreferencesDataStore_GetAllKeys_KeysRetrievedSuccessfully() = runTest(testDispatcher) {
+        // Act
+        userPreferencesDataStore.putValue("user_score", 42)
+        userPreferencesDataStore.putValue("user_name", "Alice")
+        val result = userPreferencesDataStore.getAllKeys()
+
+        // Assert
+        assertEquals(setOf("user_score", "user_name"), result)
+    }
+
+    /**
+     * Tests that [UserPreferencesDataStore.getSize] successfully retrieves the number of stored key-value pairs.
+     * Verifies that the size matches the expected number of entries.
+     */
+    @Test
+    fun userPreferencesDataStore_GetSize_SizeRetrievedSuccessfully() = runTest(testDispatcher) {
+        // Arrange
+        val size = 2
+
+        // Act
+        userPreferencesDataStore.putValue("user_score", 42)
+        userPreferencesDataStore.putValue("user_name", "Alice")
+        val result = userPreferencesDataStore.getSize()
+
+        // Assert
+        assertEquals(size, result)
     }
 }
