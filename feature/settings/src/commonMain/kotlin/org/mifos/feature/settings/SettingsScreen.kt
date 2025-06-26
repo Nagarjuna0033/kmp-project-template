@@ -33,7 +33,7 @@ import kmp_project_template.feature.settings.generated.resources.Res
 import kmp_project_template.feature.settings.generated.resources.feature_settings_change_theme_placeholder_text
 import kmp_project_template.feature.settings.generated.resources.feature_settings_change_theme_text
 import org.jetbrains.compose.resources.stringResource
-import org.mifos.core.designsystem.component.MifosScaffold
+import org.mifos.core.designsystem.components.KptScaffold
 import org.mifos.core.designsystem.icon.AppIcons
 
 @Composable
@@ -64,9 +64,9 @@ internal fun SettingsScreenContent(
     onThemeCardClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    MifosScaffold(
-        topBarTitle = "Settings",
-        backPress = onBackClick,
+    KptScaffold(
+        title = "Settings",
+        onNavigationIconClick = onBackClick,
         modifier = modifier,
     ) {
         Column(

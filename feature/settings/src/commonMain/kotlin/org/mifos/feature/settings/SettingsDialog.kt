@@ -22,6 +22,7 @@ import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
@@ -50,7 +51,6 @@ import kmp_project_template.feature.settings.generated.resources.feature_setting
 import kmp_project_template.feature.settings.generated.resources.feature_settings_title
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
-import org.mifos.core.designsystem.component.MifosTextButton
 import org.mifos.core.model.DarkThemeConfig
 import org.mifos.core.model.ThemeBrand
 
@@ -113,14 +113,13 @@ fun SettingsDialog(
             }
         },
         confirmButton = {
-            MifosTextButton(
+            Button(
                 onClick = onDismiss,
                 modifier = Modifier.padding(horizontal = 8.dp),
             ) {
                 Text(
                     text = stringResource(resource = Res.string.feature_settings_dismiss_dialog_button_text),
                     style = MaterialTheme.typography.labelLarge,
-                    color = MaterialTheme.colorScheme.primary,
                 )
             }
         },
