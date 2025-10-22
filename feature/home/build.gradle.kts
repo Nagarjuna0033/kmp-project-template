@@ -20,8 +20,6 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             implementation(projects.coreBase.platform)
-            implementation(projects.coreBase.datastore)
-
 
             implementation(compose.ui)
             implementation(compose.material3)
@@ -35,5 +33,11 @@ kotlin {
 
             implementation(libs.calf.permissions)
         }
+    }
+}
+
+compose {
+    resources {
+        packageOfResClass = "org.mifos.feature.home.generated.resources"
     }
 }
